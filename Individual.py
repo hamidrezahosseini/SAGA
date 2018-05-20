@@ -9,12 +9,15 @@ class Individual():
 	os mesmos receberao valores nulos, caso o alignment seja informado o chromossome é inicializado de
 	forma randomica a fim de criar a populacao inicial
 	"""
-	def __init__(self, generation = 0, alignment = []):
+	def __init__(self, alignment = [], generation = 0):
 		self.__generation = generation
-		self.__chromossome = alignment
+		self.__chromossome = []
 		self.__fitness = 0
 		self.__expectOffspring = 0 # expected offspring (EO)
-		self.__lenAlignment = 0 
+		self.__lenAlignment = 0
+
+		for row in alignment:
+			self.__chromossome.append(row)
 		
 		self.__lengthChromossome()
 
@@ -37,8 +40,7 @@ class Individual():
 		for row in range(0, len(self.__chromossome)):
 			while len(self.__chromossome[row]) < self.__lenAlignment:
 				i = randint(0, len(self.__chromossome[row])-1)
-				self.__chromossome[row] = self.__chromossome[row][0:i] + "-" + self.__chromossome[row][i::]
-			print("row = %s\n" % (self.__chromossome[row]))
+				self.__chromossome[row] = self.__chromossome[row][0:i] + "*" + self.__chromossome[row][i::]
 
 	def setChromossome(self, chromossome):
 		self.__chromossome = chromossome
