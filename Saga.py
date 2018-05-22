@@ -131,12 +131,68 @@ class Saga():
 
 
 	"""
+	Realiza a normalizacao do valor de fitness para a realização da selecao dos pais
+	"""
+	def __calc_offspring(self):
+
+		sum_fitness = 0
+		for indiv in self.__population:
+			sum_fitness += indiv.getFitness()
+		
+		print("sum_fitness = %d" % sum_fitness)
+		for indiv in self.__population:
+			indiv.setOffspring(indiv.getFitness()/sum_fitness)
+			# print("offspring = %f" % indiv.getOffspring())
+
+	"""
+	Realiza a seleção do pai por meio do metodo da roleta, fazendo uso do offspring como 
+	parametro de avaliação de aptidão
+	"""
+	def __select_parent(self):
+		sum_offspring = 0
+		for indiv in self.__population:
+			sum_offspring += indiv.getOffspring()
+
+		relat_aptitude = []
+		for i in range(0, self.__populationSize):
+			relat_aptitude.append(indiv.getOffspring()/sum_offspring)
+		
+		spin = random()*sum_offspring
+		print("spin = %f" % spin)
+		i = 0
+		while i < self.__populationSize and spin > 0:
+			spin -= relat_aptitude[i]
+			i += 1
+
+		return i
+
+	"""
 	Principal metodo do saga, o qual realizará a execução do algoritmo genetico, possui como 
 	parametro o alinhamento a ser realizado
 	"""
 	def execute(self, alignment):
 		self.__initialPopulation(alignment)
 		self.__scorePopulation()
+
+		while self.__generation < self.__numGenerations:
+
+			list_replaced = []
+			for i in range(0, int(self.__populationSize/2)):
+				list_replaced.append(self.__population[i])
+
+			self.__calc_offspring()
+			list_child = []
+
+			# Realiza uma amostragem estocatisca sem reposição
+			while True:
+				if len(list_child) < (self.__populationSize - len(list_replaced)):
+					parent1 = self.__select_parent()
+					parent2 = self.__select_parent()
+					print("parent1 = %d | parent2 = %d" % (parent1, parent2))
+					break
+				else:
+					break
+			self.__generation = self.__numGenerations
 
 
 	"""
