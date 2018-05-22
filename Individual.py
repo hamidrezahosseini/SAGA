@@ -52,6 +52,9 @@ class Individual():
 	def setGeneration(self, generation):
 		self.__generation = generation
 
+	def setOffspring(self, offspring):
+		self.__expectOffspring = offspring
+
 	def getChromossome(self):
 		return self.__chromossome
 
@@ -63,3 +66,6 @@ class Individual():
 
 	def getLenAlignment(self):
 		return self.__lenAlignment
+
+	def getOffspring(self):
+		return self.__expectOffspring
