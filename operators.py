@@ -1,4 +1,7 @@
-from random import randint
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*
+# from random import randint
+from random import *
 from Individual import Individual
 
 
@@ -6,7 +9,7 @@ from Individual import Individual
 Operador de crossover de um ponto, retorna os filhos do crossover
 """
 def crossover_one_point(parent1, parent2):
-
+    print("-----------OPERADOR CROSSOVER 1 PONTO-----------")
     chromossome1 = parent1.getChromossome()
     chromossome2 = parent2.getChromossome()
     
@@ -96,6 +99,95 @@ def crossover_one_point(parent1, parent2):
         print("child2 = %s" % row)
     
 
+"""
+Implementação do operador crossover uniforme
+"""
+def crossover_uniforme(sequencia1, sequencia2):
+    print("\n")
+    print("---------------OPERADOR CROSSOVER UNIFORME---------------")
+    chromossome1 = sequencia1.getChromossome()
+    chromossome2 = sequencia2.getChromossome()
+    position = []
+
+    num_seq1 = len(chromossome1)
+    num_seq2 = len(chromossome2)
+
+    for x in range(0, num_seq1):
+        tam_min = min(len(chromossome1[x]), len(chromossome2[x]))
+        chrom1_size = len(chromossome1[x])
+        chrom2_size = len(chromossome2[x])
+
+        sequencia_chromossome1 = chromossome1[x]
+        sequencia_chromossome2 = chromossome2[x]
+        
+        for y in range(0, tam_min):
+            if sequencia_chromossome1[y] == sequencia_chromossome2[y]: #Condição para o mapeamento
+                position.append(y) # Armazenar as posições que corresponde tanto ao pai1 como ao pai2
+        print("PAI 1: %s" % sequencia_chromossome1)
+        print("PAI 2: %s" % sequencia_chromossome2)
+        print('MAPEAMENTO: %s' % position)
+        x = sample(position,  2) 
+        print ("ESCOLHIDOS: %s" % x)
+        del position[:]
+        child1_part1 = []
+        child1_part2 = []
+        child1_part3 = []
+        child1_part4 = []
+        child1_part5 = []
+        
+        child2_part1 = []
+        child2_part2 = []
+        child2_part3 = []
+        child2_part4 = []
+        child2_part5 = []
+
+        menor_posicao = min(x[0], x[1])
+        maior_posicao = max(x[0], x[1])
+
+        # Para fazer a permutação dos pontos
+        for y in range(0, chrom1_size):
+            if y < menor_posicao:
+                child1_part1.append(sequencia_chromossome1[y])
+            if y == menor_posicao:
+                child1_part2.append(sequencia_chromossome1[y])
+            if y > menor_posicao and y < maior_posicao:
+                child1_part3.append(sequencia_chromossome1[y])
+            if y == maior_posicao:
+                child1_part4.append(sequencia_chromossome1[y])
+            if y > maior_posicao:
+                child1_part5.append(sequencia_chromossome1[y])
+        
+        for y in range(0, chrom2_size):
+            if y < menor_posicao:
+                child2_part1.append(sequencia_chromossome2[y])
+            if y == menor_posicao:
+                child2_part2.append(sequencia_chromossome2[y])
+            if y > menor_posicao and y < maior_posicao:
+                child2_part3.append(sequencia_chromossome2[y])
+            if y == maior_posicao:
+                child2_part4.append(sequencia_chromossome2[y])
+            if y > maior_posicao:
+                child2_part5.append(sequencia_chromossome2[y])
+        
+        child1 = child1_part1+child1_part2+child2_part3+child1_part4+child1_part5
+        child2 = child2_part1+child2_part2+child1_part3+child2_part4+child2_part5
+
+        for y in range(0, len(child1)):
+            if y == 0:
+                teste = child1[y]
+            else:
+                teste += child1[y]
+        print("CHILD 1: %s" % teste)
+
+        for y in range(0, len(child2)):
+            if y == 0:
+                teste = child2[y]
+            else:
+                teste += child2[y]
+        print("CHILD 2: %s" % teste)
+        print("\n")
+
+
 if __name__ == '__main__':
     
     chromossome1 = [
@@ -119,6 +211,7 @@ if __name__ == '__main__':
     indiv2.setChromossome(chromossome2)
 
     crossover_one_point(indiv1, indiv2)
+    crossover_uniforme(indiv1, indiv2);
 
     print()
     print("indiv1 = %s" % indiv1.getChromossome())
