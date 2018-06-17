@@ -188,6 +188,36 @@ def crossover_uniforme(sequencia1, sequencia2):
         print("\n")
 
 
+"""
+Implememtação do operador block shuffling 1
+"""
+def block_shuffling_left(sequencia):
+    # Para o operador block shuffling mover um bloco cheio de lacunas uma posição para esquerda
+    print("-----------MOVER BLOCO DE LACUNAS PARA UMA POSIÇÃO NA ESQUERDA-----------")
+    sequence = sequencia.getChromossome()
+    amount_sequence = len(sequence)
+    for x in range(0, amount_sequence):
+        size_sequence = len(sequence[x])
+        
+        child = []
+        for y in range(0, size_sequence): # Para identificar os gap e os mover
+            if sequence[x][y] == "*":
+                temp = child[len(child)-1]
+                child.pop()
+                child.append(sequence[x][y])
+                child.append(temp)
+            else:
+                child.append(sequence[x][y])         
+
+        for y in range(0, len(child)):
+            if y == 0:
+                child_new = child[y]
+            else:
+                child_new += child[y]
+        print("PAI: %s" % sequence[x])
+        print("FILHO: %s" % child_new)
+        print("\n")
+
 if __name__ == '__main__':
     
     chromossome1 = [
@@ -209,9 +239,10 @@ if __name__ == '__main__':
 
     indiv2 = Individual()
     indiv2.setChromossome(chromossome2)
-
+    # operadores 
     crossover_one_point(indiv1, indiv2)
     crossover_uniforme(indiv1, indiv2);
+    block_shuffling_left(indiv1)
 
     print()
     print("indiv1 = %s" % indiv1.getChromossome())
