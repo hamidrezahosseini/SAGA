@@ -229,6 +229,53 @@ Implementação do operador block shuffling 2
 def block_shuffling_vertically(sequencia):
     # Para o operador block shuffling para dividir a metade um bloco de gaps e mover para esquerda
     print("-----------VERTICAL GAPS-----------")
+    sequence = sequencia.getChromossome()
+    amount_sequence = len(sequence)
+    contador1 = 0
+    contador2 = 0
+    for x in range(0, amount_sequence):
+        
+        size_sequence = len(sequence[x])
+        child = []
+        position = []
+        for y in range(0, size_sequence):
+            if sequence[x][y] == "*":
+                position.append(y)
+                contador1 += 1
+                contador2 = 0
+            else:
+                contador2 = 1
+            if contador1 > 1 and contador2 == 1:
+                contador1 = 0
+                contador2 = 0
+                break
+                
+        if len(position) % 2 == 0:
+            teste = len(position) / 2
+        else:
+            teste = len(position) / 2
+        child = []
+        
+        for y in range(0, size_sequence):
+            recebe = int(position[0])+ teste
+            if y == position[0]:
+                temp = child[len(child)-1]
+                child.pop()
+            if y == recebe:
+                child.append(temp)
+                child.append(sequence[x][y])
+            else:
+                child.append(sequence[x][y])
+        
+        for y in range(0, len(child)):
+            if y == 0:
+                child_new = child[y]
+            else:
+                child_new += child[y]  
+        del child
+        print("PAI: %s" % sequence[x]) 
+        print("FILHO: %s" % child_new) 
+        print("\n")
 #
 # -----------------------------------------------------------------------
 #       
