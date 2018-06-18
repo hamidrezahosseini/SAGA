@@ -3,6 +3,7 @@
 
 from random import random
 from Individual import Individual
+from Operator import Operator
 
 class Saga():
 	def __init__(self, populationSize = 20, numGenerations = 100, mutationRate = 0.1):
@@ -23,7 +24,7 @@ class Saga():
 	def __initialPopulation(self, alignment):
 		for i in range(0, self.__populationSize):
 			self.__population.append(Individual(alignment))
-
+		
 
 	"""
 	Funcao objetivo, realiza o calculo de fitness por meio do metodo da soma de pares
@@ -31,17 +32,17 @@ class Saga():
 	gap penalty (mode="quasi") e por meio da matrizes de pesos (Blosum/Pam)
 	"""
 	def __objctive_function(self, individual, mode="natural"):
-		chromossome = individual.getChromossome()
+		chromosome = individual.getChromosome()
 		sp_score = 0
 		gap_penalty = 0
 		size_sequence = individual.getLenAlignment()
 
 		# Realiza a soma dos match/mismatch e o gap_penalty dos pares alinhados
-		for i in range(0, len(chromossome)):
-			seq1 = chromossome[i]
+		for i in range(0, len(chromosome)):
+			seq1 = chromosome[i]
 
-			for j in range(i+1, len(chromossome)):
-				seq2 = chromossome[j]
+			for j in range(i+1, len(chromosome)):
+				seq2 = chromosome[j]
 				seq_aux1 = seq_aux2 = ""
 
 				# Calcula o valor de match/mismatch das colunas do alinhamento
@@ -56,7 +57,7 @@ class Saga():
 					gap_penalty += self.__natural_gap(seq_aux1)
 					gap_penalty += self.__natural_gap(seq_aux2)
 				elif mode == "quasi":
-					gap_penalty += self.__quasi_natural_gap(sequence1, sequence2)
+					gap_penalty += self.__quasi_natural_gap(seq1, seq2)
 				else:
 					raise NameError("The object function mode is invalid!")
 		individual.setFitness(sp_score + gap_penalty)
@@ -125,7 +126,7 @@ class Saga():
 	"""
 	def __scorePopulation(self):
 		for individual in self.__population:
-			self.__objctive_function(individual)
+			self.__objctive_function(individual, "natural")
 
 		self.__population = sorted(self.__population, key=lambda indiv: indiv.getFitness(), reverse=True)
 
@@ -154,42 +155,52 @@ class Saga():
 			sum_offspring += indiv.getOffspring()
 
 		relat_aptitude = []
-		for i in range(0, self.__populationSize):
+		for indiv in self.__population:
 			relat_aptitude.append(indiv.getOffspring()/sum_offspring)
 		
 		spin = random()*sum_offspring
-		print("spin = %f" % spin)
+		# print("spin = %f" % spin)
 		i = 0
 		while i < self.__populationSize and spin > 0:
 			spin -= relat_aptitude[i]
 			i += 1
 
-		return i
+		# print("parent selected = %d" % i)
+		return self.__population[i]
 
 	"""
 	Principal metodo do saga, o qual realizará a execução do algoritmo genetico, possui como 
 	parametro o alinhamento a ser realizado
 	"""
 	def execute(self, alignment):
+		operator_obj = Operator()
 		self.__initialPopulation(alignment)
 		self.__scorePopulation()
 
 		while self.__generation < self.__numGenerations:
-
-			list_replaced = []
+			list_replaced = [] # lista de individuo indicados a proxima geração
 			for i in range(0, int(self.__populationSize/2)):
 				list_replaced.append(self.__population[i])
 
 			self.__calc_offspring()
-			list_child = []
+			list_child = [] # lista de filhos gerados
 
 			# Realiza uma amostragem estocatisca sem reposição
 			while True:
 				if len(list_child) < (self.__populationSize - len(list_replaced)):
+					# seleciona o operador e armazena o numero de parents
+					num_parent = operator_obj.select_operator()
+					
 					parent1 = self.__select_parent()
-					parent2 = self.__select_parent()
-					print("parent1 = %d | parent2 = %d" % (parent1, parent2))
-					break
+					child1 = parent1.clone()
+					if num_parent == 2:
+						parent2 = self.__select_parent()
+						child2 = parent2.clone()
+						operator_obj.run_operator(child1, parent2=child2)
+						
+					else:
+						operator_obj.run_operator(child1)
+						list_child.append(child1)
 				else:
 					break
 			self.__generation = self.__numGenerations

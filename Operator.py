@@ -7,27 +7,55 @@ from Individual import Individual
 Classe de operadores do saga
 """
 class Operator():
-    
+    """
+    Construtor da classe operador, armazena os operadores em um dicionario, a fim de serem selecinonados
+    aleatoriamente pelos seus indices.
+    """
     def __init__(self):
-        pass
+        self.function_dict = {
+            1: self.crossover_one_point, # 2 parents
+            2: self.crossover_uniform, # 2 parents
+            3: self.block_shuffling_left, # 1 parents
+            4: self.block_shuffling_vertically, # 1 parents
+        }
+        self.selected_op = 0 # guarda a key do operador selecionado
 
 
     """
     Seleciona de por meio da roleta um operador e retorna o numero de pais a serem selecionados
     """
     def select_operator(self):
-        pass
+        dict_len = len(self.function_dict)
+
+        # seleciona o operador aleatoriamente
+        self.selected_op = randint(0,dict_len-1)
+
+        # Verifica se o operator escolhido necessita de 1 parent
+        if self.selected_op == 3 or self.selected_op == 4:
+            return 1
+        else:
+            return 2
+
+
+    """
+    Executa o operador selecionado, retornando os filhos gerados pelo operador
+    """
+    def run_operator(self, parent1, parent2 = None):
+        if parent2 is not None:
+            self.function_dict[self.selected_op](parent1, parent2)
+        else:
+            self.function_dict[self.selected_op](parent1)
 
 
     """
     Operador de crossover de um ponto, retorna os filhos do crossover
     """
     def crossover_one_point(self, individual1, individual2):
-        chromossome1 = individual1.getChromossome()
-        chromossome2 = individual2.getChromossome()
+        chromosome1 = individual1.getChromosome()
+        chromosome2 = individual2.getChromosome()
         
-        num_seq = len(chromossome1)
-        point = randint(1, len(chromossome1[0])-1) # ponto de corte
+        num_seq = len(chromosome1)
+        point = randint(1, len(chromosome1[0])-1) # ponto de corte
 
         # primeiro cromossomo
         part1_a = []
@@ -38,7 +66,7 @@ class Operator():
         part2_b = []
 
         # divide a primeira matriz
-        for row in chromossome1:
+        for row in chromosome1:
             part1_a.append(row[0:point])
             part1_b.append(row[point::])
 
@@ -47,7 +75,7 @@ class Operator():
             num_char_a.append(len(row) - row.count('*'))
 
         # Divide o segundo cromossomo
-        for i, row in enumerate(chromossome2):
+        for i, row in enumerate(chromosome2):
             cont = 0
             for j, char in enumerate(row):
                 if char != '*':
@@ -87,42 +115,42 @@ class Operator():
             child2.append(part2_a[i]+part1_b[i])
 
         # atribui os novos cromossomos aos individuos
-        individual1.setChromossome(child1)
-        individual2.setChromossome(child2)
+        individual1.setChromosome(child1)
+        individual2.setChromosome(child2)
 
     """
     Operador de crossover uniforme, realiza o crossover uniforme entre dois cromossomos
     """
-    def crossover_uniforme(self, individual1, individual2):
-        print("\n")
-        print("---------------OPERADOR CROSSOVER UNIFORME---------------")
-        chromossome1 = individual1.getChromossome()
-        chromossome2 = individual2.getChromossome()
+    def crossover_uniform(self, individual1, individual2):
+        # print("\n")
+        # print("---------------OPERADOR CROSSOVER UNIFORME---------------")
+        chromosome1 = individual1.getChromosome()
+        chromosome2 = individual2.getChromosome()
         position = []
 
-        num_seq1 = len(chromossome1)
-        # num_seq2 = len(chromossome2) (não esta sendo usada)
+        num_seq1 = len(chromosome1)
+        # num_seq2 = len(chromosome2) (não esta sendo usada)
 
         # cromossomo dos filhos
-        child1_chromossome = []
-        child2_chromossome = []
+        child1_chromosome = []
+        child2_chromosome = []
 
         for x in range(0, num_seq1):
-            tam_min = min(len(chromossome1[x]), len(chromossome2[x]))
-            chrom1_size = len(chromossome1[x])
-            chrom2_size = len(chromossome2[x])
+            tam_min = min(len(chromosome1[x]), len(chromosome2[x]))
+            chrom1_size = len(chromosome1[x])
+            chrom2_size = len(chromosome2[x])
 
-            sequencia_chromossome1 = chromossome1[x]
-            sequencia_chromossome2 = chromossome2[x]
+            sequencia_chromosome1 = chromosome1[x]
+            sequencia_chromosome2 = chromosome2[x]
             
             for y in range(0, tam_min):
-                if sequencia_chromossome1[y] == sequencia_chromossome2[y]: #Condição para o mapeamento
+                if sequencia_chromosome1[y] == sequencia_chromosome2[y]: #Condição para o mapeamento
                     position.append(y) # Armazenar as posições que corresponde tanto ao pai1 como ao pai2
-            print("PAI 1: %s" % sequencia_chromossome1)
-            print("PAI 2: %s" % sequencia_chromossome2)
-            print('MAPEAMENTO: %s' % position)
+            # print("PAI 1: %s" % sequencia_chromosome1)
+            # print("PAI 2: %s" % sequencia_chromosome2)
+            # print('MAPEAMENTO: %s' % position)
             x = sample(position,  2) 
-            print ("ESCOLHIDOS: %s" % x)
+            # print ("ESCOLHIDOS: %s" % x)
             del position[:]
             child1_part1 = []
             child1_part2 = []
@@ -142,27 +170,27 @@ class Operator():
             # Para fazer a permutação dos pontos
             for y in range(0, chrom1_size):
                 if y < menor_posicao:
-                    child1_part1.append(sequencia_chromossome1[y])
+                    child1_part1.append(sequencia_chromosome1[y])
                 if y == menor_posicao:
-                    child1_part2.append(sequencia_chromossome1[y])
+                    child1_part2.append(sequencia_chromosome1[y])
                 if y > menor_posicao and y < maior_posicao:
-                    child1_part3.append(sequencia_chromossome1[y])
+                    child1_part3.append(sequencia_chromosome1[y])
                 if y == maior_posicao:
-                    child1_part4.append(sequencia_chromossome1[y])
+                    child1_part4.append(sequencia_chromosome1[y])
                 if y > maior_posicao:
-                    child1_part5.append(sequencia_chromossome1[y])
+                    child1_part5.append(sequencia_chromosome1[y])
             
             for y in range(0, chrom2_size):
                 if y < menor_posicao:
-                    child2_part1.append(sequencia_chromossome2[y])
+                    child2_part1.append(sequencia_chromosome2[y])
                 if y == menor_posicao:
-                    child2_part2.append(sequencia_chromossome2[y])
+                    child2_part2.append(sequencia_chromosome2[y])
                 if y > menor_posicao and y < maior_posicao:
-                    child2_part3.append(sequencia_chromossome2[y])
+                    child2_part3.append(sequencia_chromosome2[y])
                 if y == maior_posicao:
-                    child2_part4.append(sequencia_chromossome2[y])
+                    child2_part4.append(sequencia_chromosome2[y])
                 if y > maior_posicao:
-                    child2_part5.append(sequencia_chromossome2[y])
+                    child2_part5.append(sequencia_chromosome2[y])
             
             child1 = child1_part1+child1_part2+child2_part3+child1_part4+child1_part5
             child2 = child2_part1+child2_part2+child1_part3+child2_part4+child2_part5
@@ -172,20 +200,20 @@ class Operator():
                     teste = child1[y]
                 else:
                     teste += child1[y]
-            print("CHILD 1: %s" % teste)
-            child1_chromossome.append(teste)
+            # print("CHILD 1: %s" % teste)
+            child1_chromosome.append(teste)
 
             for y in range(0, len(child2)):
                 if y == 0:
                     teste = child2[y]
                 else:
                     teste += child2[y]
-            print("CHILD 2: %s" % teste)
-            print("\n")
-            child2_chromossome.append(teste)
+            # print("CHILD 2: %s" % teste)
+            # print("\n")
+            child2_chromosome.append(teste)
 
-        individual1.setChromossome(child1_chromossome)
-        individual2.setChromossome(child2_chromossome)
+        individual1.setChromosome(child1_chromosome)
+        individual2.setChromosome(child2_chromosome)
 
 
     """
@@ -193,10 +221,10 @@ class Operator():
     """
     def block_shuffling_left(self, individual1):
         # Para o operador block shuffling mover um bloco cheio de lacunas uma posição para esquerda
-        print("-----------MOVER BLOCO DE LACUNAS PARA UMA POSIÇÃO NA ESQUERDA-----------")
-        sequence = individual1.getChromossome()
+        # print("-----------MOVER BLOCO DE LACUNAS PARA UMA POSIÇÃO NA ESQUERDA-----------")
+        sequence = individual1.getChromosome()
         amount_sequence = len(sequence)
-        child_chromossome = []
+        child_chromosome = []
         for x in range(0, amount_sequence):
             size_sequence = len(sequence[x])
             
@@ -216,23 +244,25 @@ class Operator():
                 else:
                     child_new += child[y]
 
-            child_chromossome.append(child_new)
-            print("PAI: %s" % sequence[x])
-            print("FILHO: %s" % child_new)
-            print("\n")
+            child_chromosome.append(child_new)
+            # print("PAI: %s" % sequence[x])
+            # print("FILHO: %s" % child_new)
+            # print("\n")
 
-        individual1.setChromossome(child_chromossome)
+        individual1.setChromosome(child_chromosome)
+
 
     """
     Implementação do operador block shuffling 2
     """
-    def block_shuffling_vertically(sequencia):
+    def block_shuffling_vertically(self, individual1):
         # Para o operador block shuffling para dividir a metade um bloco de gaps e mover para esquerda
-        print("-----------VERTICAL GAPS-----------")
-        sequence = sequencia.getChromossome()
+        # print("-----------VERTICAL GAPS-----------")
+        sequence = individual1.getChromosome()
         amount_sequence = len(sequence)
         contador1 = 0
         contador2 = 0
+        child_chromosome = []
         for x in range(0, amount_sequence):
             
             size_sequence = len(sequence[x])
@@ -273,42 +303,9 @@ class Operator():
                 else:
                     child_new += child[y]  
             del child
-            print("PAI: %s" % sequence[x]) 
-            print("FILHO: %s" % child_new) 
+            print("PAI:\t%s" % sequence[x]) 
+            print("FILHO:\t%s" % child_new) 
             print("\n")
-#
-# -----------------------------------------------------------------------
-#       
+            child_chromosome.append(child_new)
 
-if __name__ == '__main__':
-    operator = Operator()
-    
-    chromossome1 = [
-        "WGKVN***VDEVGGEAL*",
-        "WDKVNEEE***VGGEAL*",
-        "WGKVG**AHAGEYGAEAL",
-        "WSKVGGHA**GEYGAEAL"
-    ]
-
-    chromossome2 = [
-        "**WGKVNVDEVG*GEAL",
-        "WD**KVNEEEVG*GEAL",
-        "WGKVGA*HAGEYGAEAL",
-        "WSKVGGHAGEY*GAEAL"
-    ]
-
-    indiv1 = Individual()
-    indiv1.setChromossome(chromossome1)
-
-    indiv2 = Individual()
-    indiv2.setChromossome(chromossome2)
-
-    #operator.crossover_one_point(indiv1, indiv2)
-    operator.crossover_uniforme(indiv1, indiv2)
-    #operator.block_shuffling_left(indiv1)
-
-    
-    print()
-    print("indiv1 = %s" % indiv1.getChromossome())
-    print("indiv2 = %s" % indiv2.getChromossome())
-    
+        individual1.setChromosome(child_chromosome)
