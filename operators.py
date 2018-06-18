@@ -189,7 +189,7 @@ class Operator():
 
 
     """
-    Implememtação do operador block shuffling 1
+    Implementação do operador block shuffling 1
     """
     def block_shuffling_left(self, individual1):
         # Para o operador block shuffling mover um bloco cheio de lacunas uma posição para esquerda
@@ -222,6 +222,13 @@ class Operator():
             print("\n")
 
         individual1.setChromossome(child_chromossome)
+
+"""
+Implementação do operador block shuffling 2
+"""
+def block_shuffling_vertically(sequencia):
+    # Para o operador block shuffling para dividir a metade um bloco de gaps e mover para esquerda
+    print("-----------VERTICAL GAPS-----------")
 #
 # -----------------------------------------------------------------------
 #       
