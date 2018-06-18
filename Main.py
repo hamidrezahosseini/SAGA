@@ -4,13 +4,18 @@
 from Saga import Saga
 
 if __name__ == '__main__':
+    aligment = [
+        "MVKTLIFDIDGTILDTEKAILKSLQRI",
+        "MWLLLTMASLISVLGTTHGLFGKLHPGSPEV",
+        "MIFILTVNFRWRYLILLICKSLMLL"
+    ]
 
-    population_size = 20 #
-    mutation_rate = 0.01 #
-    number_generations = 100 #
-    saga = Saga(population_size) #
-    
-    print("Hello.")
-
-    #result = saga.execute(mutation_rate,number_generations)
+    saga = Saga(population_size=10, num_generations=20)
+    print("Parameters:")
+    print("Polulation size = 10")
+    print("um generations = 20")
+    print(aligment)
+    print()
+    saga.execute(aligment)
+    print("Fim execução!!")
    

@@ -40,17 +40,21 @@ class Individual():
 	def __randChromosome(self):
 		for row in range(0, len(self.__chromosome)):
 			while len(self.__chromosome[row]) < self.__lenAlignment:
-				i = randint(0, len(self.__chromosome[row])-1)
-				self.__chromosome[row] = self.__chromosome[row][0:i] + "*" + self.__chromosome[row][i::]
+				j = randint(0, len(self.__chromosome[row])-1)
+				self.__chromosome[row] = self.__chromosome[row][0:j] + "*" + self.__chromosome[row][j::]
 
 
 	"""
 	Cria um novo individual com os mesmos atributos
 	"""
-	def clone(self):
+	def clone(self, generation = -1):
 		clone = Individual()
+
+		if generation == -1:
+			generation = self.getGeneration()
+
 		# atribui os valores copiados ao clone
-		clone.setGeneration(self.__generation)
+		clone.setGeneration(generation)
 		clone.setChromosome(self.__chromosome)
 		clone.setFitness(self.__fitness)
 		clone.setOffspring(self.__expectOffspring)
@@ -87,8 +91,16 @@ class Individual():
 
 
 	def getLenAlignment(self):
-		return self.__lenAlignment
+		return len(self.__chromosome[0])
 
 
 	def getOffspring(self):
 		return self.__expectOffspring
+
+	
+	def toString(self):
+		chromosome = ""
+		for row in self.__chromosome:
+			chromosome += row+"\n"
+		return "[%d] score: %d offspring: %f\nchromosome:\n%s" % (self.__generation, self.__fitness,
+		self.__expectOffspring, chromosome)

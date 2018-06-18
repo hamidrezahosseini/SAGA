@@ -15,8 +15,8 @@ class Operator():
         self.function_dict = {
             1: self.crossover_one_point, # 2 parents
             2: self.crossover_uniform, # 2 parents
-            3: self.block_shuffling_left, # 1 parents
-            4: self.block_shuffling_vertically, # 1 parents
+            # 3: self.block_shuffling_left, # 1 parents
+            # 4: self.block_shuffling_vertically, # 1 parents
         }
         self.selected_op = 0 # guarda a key do operador selecionado
 
@@ -28,7 +28,7 @@ class Operator():
         dict_len = len(self.function_dict)
 
         # seleciona o operador aleatoriamente
-        self.selected_op = randint(0,dict_len-1)
+        self.selected_op = randint(1,dict_len)
 
         # Verifica se o operator escolhido necessita de 1 parent
         if self.selected_op == 3 or self.selected_op == 4:
@@ -51,6 +51,8 @@ class Operator():
     Operador de crossover de um ponto, retorna os filhos do crossover
     """
     def crossover_one_point(self, individual1, individual2):
+        # print("Individual1 = %s" % individual1.toString())
+        # print("Individual2 = %s\n" % individual2.toString())
         chromosome1 = individual1.getChromosome()
         chromosome2 = individual2.getChromosome()
         
@@ -65,7 +67,7 @@ class Operator():
         part2_a = []
         part2_b = []
 
-        # divide a primeira matriz
+        # divide o primeiro cromossomo
         for row in chromosome1:
             part1_a.append(row[0:point])
             part1_b.append(row[point::])
@@ -77,10 +79,14 @@ class Operator():
         # Divide o segundo cromossomo
         for i, row in enumerate(chromosome2):
             cont = 0
+            # print("num_char_a[i] = %d\nrow %s\n" % (num_char_a[i], row))
             for j, char in enumerate(row):
                 if char != '*':
                     cont += 1
-                if cont == num_char_a[i]:
+                if not num_char_a[i]:
+                    part2_a.append('')
+                    part2_b.append(row)
+                elif cont == num_char_a[i]:
                     part2_a.append(row[0:j+1])
                     part2_b.append(row[j+1::])
                     break
@@ -95,12 +101,12 @@ class Operator():
         for i in part2_b:
             size_seq_B = max(size_seq_B, len(i))
 
-        # Ajusta o tamanho da primeira sequencia
+        # Ajusta o tamanho da segunda sequencia lado A
         for i in range(0,  len(part2_a)):
             while len(part2_a[i]) < size_seq_A:
                 part2_a[i] = part2_a[i] + '*'
 
-        # Ajusta o tamanho da primeira sequencia
+        # Ajusta o tamanho da segunda sequencia lado B
         for i in range(0, len(part2_b)):
             while len(part2_b[i]) < size_seq_B:
                 part2_b[i] = '*' + part2_b[i]
@@ -110,6 +116,8 @@ class Operator():
         child2 = []
 
         # realiza a juncao dos cromossomos
+        # print("part1_a %s\npart1_b %s" % (part1_a, part1_b))
+        # print("part2_a %s\npart2_b %s\n" % (part2_a, part2_b))
         for i in range(0, num_seq):
             child1.append(part1_a[i]+part2_b[i])
             child2.append(part2_a[i]+part1_b[i])
@@ -231,7 +239,8 @@ class Operator():
             child = []
             for y in range(0, size_sequence): # Para identificar os gap e os mover
                 if sequence[x][y] == "*":
-                    temp = child[len(child)-1]
+                    # print(len(child)-1)
+                    temp = child[len(child)-1] # list index out of range
                     child.pop()
                     child.append(sequence[x][y])
                     child.append(temp)
@@ -287,7 +296,7 @@ class Operator():
             child = []
             
             for y in range(0, size_sequence):
-                recebe = int(position[0])+ teste
+                recebe = int(position[0]) + teste # list index out of range
                 if y == position[0]:
                     temp = child[len(child)-1]
                     child.pop()
