@@ -8,15 +8,15 @@ Classe de operadores do saga
 """
 class Operator():
     """
-    Construtor da classe operador, armazena os operadores em um dicionario, a fim de serem selecinonados
+    Construtor da classe operador, armazena os operadores em um dicionario, a fim de serem selecionados
     aleatoriamente pelos seus indices.
     """
     def __init__(self):
         self.function_dict = {
             1: self.crossover_one_point, # 2 parents
             2: self.crossover_uniform, # 2 parents
-            # 3: self.block_shuffling_left, # 1 parents
-            # 4: self.block_shuffling_vertically, # 1 parents
+            3: self.block_shuffling_left, # 1 parents
+            4: self.block_shuffling_vertically, # 1 parents
         }
         self.selected_op = 0 # guarda a key do operador selecionado
 
@@ -130,7 +130,6 @@ class Operator():
     Operador de crossover uniforme, realiza o crossover uniforme entre dois cromossomos
     """
     def crossover_uniform(self, individual1, individual2):
-        # print("\n")
         # print("---------------OPERADOR CROSSOVER UNIFORME---------------")
         chromosome1 = individual1.getChromosome()
         chromosome2 = individual2.getChromosome()
@@ -157,7 +156,7 @@ class Operator():
             # print("PAI 1: %s" % sequencia_chromosome1)
             # print("PAI 2: %s" % sequencia_chromosome2)
             # print('MAPEAMENTO: %s' % position)
-            x = sample(position,  2) 
+            x = sample(position,  2) #escolhe aleatório dois
             # print ("ESCOLHIDOS: %s" % x)
             del position[:]
             child1_part1 = []
@@ -234,19 +233,23 @@ class Operator():
         amount_sequence = len(sequence)
         child_chromosome = []
         for x in range(0, amount_sequence):
-            size_sequence = len(sequence[x])
-            
+            size_sequence = len(sequence[x])            
             child = []
+            # var = ""
+            # contador = 0
             for y in range(0, size_sequence): # Para identificar os gap e os mover
                 if sequence[x][y] == "*":
-                    # print(len(child)-1)
-                    temp = child[len(child)-1] # list index out of range
-                    child.pop()
-                    child.append(sequence[x][y])
-                    child.append(temp)
+                    if y != 0:
+                        temp = child[len(child)-1] 
+                        child.pop()
+                        child.append(sequence[x][y])
+                        child.append(temp)
+                    else:
+                        # contador = 1
+                        var = sequence[x][size_sequence-1]
+                        child.append(sequence[x][y])
                 else:
                     child.append(sequence[x][y])
-
             for y in range(0, len(child)):
                 if y == 0:
                     child_new = child[y]
@@ -294,17 +297,23 @@ class Operator():
             else:
                 teste = len(position) / 2
             child = []
-            
+            temp = ""
             for y in range(0, size_sequence):
-                recebe = int(position[0]) + teste # list index out of range
-                if y == position[0]:
-                    temp = child[len(child)-1]
-                    child.pop()
-                if y == recebe:
-                    child.append(temp)
+                if position == []:
                     child.append(sequence[x][y])
                 else:
-                    child.append(sequence[x][y])
+                    recebe = int(position[0]) + teste
+                    # print("CHILD: %s" % child)
+                    if y == position[0]:
+                        if child != []:
+                            temp = child[len(child)-1]
+                            child.pop()
+                        
+                    if y == recebe:
+                        child.append(temp)
+                        child.append(sequence[x][y])
+                    else:
+                        child.append(sequence[x][y])
             
             for y in range(0, len(child)):
                 if y == 0:
