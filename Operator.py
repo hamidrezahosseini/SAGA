@@ -29,6 +29,7 @@ class Operator():
 
         # seleciona o operador aleatoriamente
         self.selected_op = randint(1,dict_len)
+        # self.selected_op = 1
 
         # Verifica se o operator escolhido necessita de 1 parent
         if self.selected_op == 3 or self.selected_op == 4:
@@ -157,6 +158,8 @@ class Operator():
             # print("PAI 1: %s" % sequencia_chromosome1)
             # print("PAI 2: %s" % sequencia_chromosome2)
             # print('MAPEAMENTO: %s' % position)
+            if len(position) < 2:
+                return None
             x = sample(position,  2) 
             # print ("ESCOLHIDOS: %s" % x)
             del position[:]
