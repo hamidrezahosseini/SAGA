@@ -52,7 +52,7 @@ class Saga():
 				# print("size_sequence = %d" % size_sequence)
 				# print("len_seq1 %d\nlen_seq2 %d" % (len(seq1), len(seq2)))
 				for k in range(0, size_sequence):
-					if seq1[k] != '*' or seq2[k] != '*':
+					if seq1[k] != '-' or seq2[k] != '-':
 						seq_aux1 += seq1[k]
 						seq_aux2 += seq2[k]
 						sp_score += self.__calc_score(seq1[k], seq2[k])
@@ -79,10 +79,10 @@ class Saga():
 
 		for i in range(0, len(sequence)):
 			# abertura de um gap
-			if sequence[i] == '*' and flag == 0:
+			if sequence[i] == '-' and flag == 0:
 				flag = 1
 			# extencao de gap
-			if sequence[i] == '*' and flag == 1:
+			if sequence[i] == '-' and flag == 1:
 				num_open += 1
 				gap_length += 1
 			else:
@@ -111,7 +111,7 @@ class Saga():
 			local = "./matrices/"+ matrix +".txt"
 
 			with open(local) as file:
-				amino_acids = " ARNDCQEGHILKMFPSTWYVBZX*"
+				amino_acids = " ARNDCQEGHILKMFPSTWYVBZX-"
 				i = amino_acids.index(char1)
 				j = 3*amino_acids.index(char2)
 				

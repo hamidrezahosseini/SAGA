@@ -75,14 +75,14 @@ class Operator():
 
         num_char_a = []
         for row in part1_a:
-            num_char_a.append(len(row) - row.count('*'))
+            num_char_a.append(len(row) - row.count('-'))
 
         # Divide o segundo cromossomo
         for i, row in enumerate(chromosome2):
             cont = 0
             # print("num_char_a[i] = %d\nrow %s\n" % (num_char_a[i], row))
             for j, char in enumerate(row):
-                if char != '*':
+                if char != '-':
                     cont += 1
                 if not num_char_a[i]:
                     part2_a.append('')
@@ -105,12 +105,12 @@ class Operator():
         # Ajusta o tamanho da segunda sequencia lado A
         for i in range(0,  len(part2_a)):
             while len(part2_a[i]) < size_seq_A:
-                part2_a[i] = part2_a[i] + '*'
+                part2_a[i] = part2_a[i] + '-'
 
         # Ajusta o tamanho da segunda sequencia lado B
         for i in range(0, len(part2_b)):
             while len(part2_b[i]) < size_seq_B:
-                part2_b[i] = '*' + part2_b[i]
+                part2_b[i] = '-' + part2_b[i]
 
         # filhos a serem gerados
         child1 = []
@@ -243,7 +243,7 @@ class Operator():
             # var = ""
             # contador = 0
             for y in range(0, size_sequence): # Para identificar os gap e os mover
-                if sequence[x][y] == "*":
+                if sequence[x][y] == "-":
                     if y != 0:
                         temp = child[len(child)-1] 
                         child.pop()
@@ -286,7 +286,7 @@ class Operator():
             child = []
             position = []
             for y in range(0, size_sequence):
-                if sequence[x][y] == "*":
+                if sequence[x][y] == "-":
                     position.append(y)
                     contador1 += 1
                     contador2 = 0
