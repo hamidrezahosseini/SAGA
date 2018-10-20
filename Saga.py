@@ -33,7 +33,7 @@ class Saga():
 	com natural affine gap penalty (mode="natural") ou com quasi-natural affine 
 	gap penalty (mode="quasi") e por meio da matrizes de pesos (Blosum/Pam)
 	"""
-	def __objctive_function(self, individual, mode="natural"):
+	def __objective_function(self, individual, mode="natural"):
 		chromosome = individual.getChromosome()
 		sp_score = 0
 		gap_penalty = 0
@@ -45,7 +45,8 @@ class Saga():
 
 			for j in range(i+1, len(chromosome)):
 				seq2 = chromosome[j]
-				seq_aux1 = seq_aux2 = ""
+				seq_aux1 = ""
+				seq_aux2 = ""
 
 				# Calcula o valor de match/mismatch das colunas do alinhamento
 				# print("size_sequence = %d" % size_sequence)
@@ -133,7 +134,7 @@ class Saga():
 	"""
 	def __scorePopulation(self):
 		for individual in self.__population:
-			self.__objctive_function(individual, "natural")
+			self.__objective_function(individual, "natural")
 
 		self.__population = sorted(self.__population, key=lambda indiv: indiv.getFitness(), reverse=True)
 
@@ -229,8 +230,8 @@ class Saga():
 					operator_obj.run_operator(child1, parent2=child2)
 
 					# calcula o score dos filhos
-					self.__objctive_function(child1, mode="natural")
-					self.__objctive_function(child2, mode="natural")
+					self.__objective_function(child1, mode="natural")
+					self.__objective_function(child2, mode="natural")
 
 					# adiciona o filho de maior escore, e valido
 					if child1.getFitness() > child2.getFitness():
@@ -257,7 +258,7 @@ class Saga():
 					operator_obj.run_operator(child1)
 
 					# calcula o fitness do filho
-					self.__objctive_function(child1, mode="natural")
+					self.__objective_function(child1, mode="natural")
 
 					# verifica se o filho é valido
 					if not self.__exist(child1, next_generation):
