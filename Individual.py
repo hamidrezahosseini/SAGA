@@ -41,7 +41,7 @@ class Individual():
 		for row in range(0, len(self.__chromosome)):
 			while len(self.__chromosome[row]) < self.__lenAlignment:
 				j = randint(0, len(self.__chromosome[row])-1)
-				self.__chromosome[row] = self.__chromosome[row][0:j] + "*" + self.__chromosome[row][j::]
+				self.__chromosome[row] = self.__chromosome[row][0:j].upper() + "-" + self.__chromosome[row][j::].upper()
 
 
 	"""
