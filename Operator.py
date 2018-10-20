@@ -326,9 +326,9 @@ class Operator():
                 else:
                     child_new += child[y]  
             del child
-            print("PAI:\t%s" % sequence[x]) 
-            print("FILHO:\t%s" % child_new) 
-            print("\n")
+            #print("PAI:\t%s" % sequence[x]) 
+            #print("FILHO:\t%s" % child_new) 
+            #print("\n")
             child_chromosome.append(child_new)
 
         individual1.setChromosome(child_chromosome)

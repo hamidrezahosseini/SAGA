@@ -19,9 +19,9 @@ class Saga():
 
 
 	"""
-	A partir do alinhamento informado cria uma populacao de individuos randomicos
+	A partir do alinhamento informado cria uma população de indivíduos randômicos
 	"""
-	def __initialPopulation(self, alignment):
+	def initialize(self, alignment):
 		for i in range(0, self.__population_size):
 			indiv = Individual(alignment)
 			self.__population.append(indiv)
@@ -29,11 +29,11 @@ class Saga():
 		
 
 	"""
-	Funcao objetivo, realiza o calculo de fitness por meio do metodo da soma de pares
+	Função objetivo, realiza o cálculo de fitness por meio do método da soma de pares
 	com natural affine gap penalty (mode="natural") ou com quasi-natural affine 
 	gap penalty (mode="quasi") e por meio da matrizes de pesos (Blosum/Pam)
 	"""
-	def __objective_function(self, individual, mode="natural"):
+	def fitness(self, individual, mode="natural"):
 		chromosome = individual.getChromosome()
 		sp_score = 0
 		gap_penalty = 0
@@ -55,12 +55,12 @@ class Saga():
 					if seq1[k] != '-' or seq2[k] != '-':
 						seq_aux1 += seq1[k]
 						seq_aux2 += seq2[k]
-						sp_score += self.__calc_score(seq1[k], seq2[k])
+						sp_score += self.score(seq1[k], seq2[k])
 
 				# Calcula o gap penalty das sequencias alinhadas
 				if mode == "natural":
-					gap_penalty += self.__natural_gap(seq_aux1)
-					gap_penalty += self.__natural_gap(seq_aux2)
+					gap_penalty += self.gap_penalties(seq_aux1)
+					gap_penalty += self.gap_penalties(seq_aux2)
 				elif mode == "quasi":
 					gap_penalty += self.__quasi_natural_gap(seq1, seq2)
 				else:
@@ -69,10 +69,10 @@ class Saga():
 
 
 	"""
-	Realiza o calculo do custo de gap da sequencia informada por meio de metodo 
+	Realiza o cálculo do custo de gap da sequência informada por meio de método 
 	natural affine gap penalties
 	"""
-	def __natural_gap(self, sequence, gap_open=-1, gap_extend=-2):
+	def gap_penalties(self, sequence, gap_open=-1, gap_extend=-2):
 		gap_length = 0
 		num_open = 0
 		flag = 0
@@ -95,18 +95,18 @@ class Saga():
 
 
 	"""
-	Realiza o calculo do custo de gap da sequencia informada por meio de metodo 
+	Realiza o cálculo do custo de gap da sequência informada por meio de metodo 
 	quasi-natural affine gap penalties
 	"""
-	def __quasi_natural_gap(self, sequence1, sequence2):
+	def __quasi_gap_penalty(self, sequence1, sequence2):
 		pass
 
 
 	"""
-	Realiza o calculo do score entre as proteinas informadas por meio da matriz de pesos. 
-	Caso seja nucleotideos e retornado o valor de match/mismatch
+	Realiza o cálculo do score entre as proteínas informadas por meio da matriz de pesos. 
+	Caso seja nucleotídeos e retornado o valor de match/mismatch
 	"""
-	def __calc_score(self, char1, char2, alignment_type="protein", matrix="pam250", match=2, mismatch=-1):
+	def score(self, char1, char2, alignment_type="protein", matrix="pam250", match=2, mismatch=-1):
 		if alignment_type == "protein":
 			local = "./matrices/"+ matrix +".txt"
 
@@ -132,17 +132,17 @@ class Saga():
 	"""
 	Calcula o fitness de cada individuo da população atual, e a ordena com base neste valor
 	"""
-	def __scorePopulation(self):
+	def scorePopulation(self):
 		for individual in self.__population:
-			self.__objective_function(individual, "natural")
+			self.fitness(individual, "natural")
 
 		self.__population = sorted(self.__population, key=lambda indiv: indiv.getFitness(), reverse=True)
 
 
 	"""
-	Realiza a normalizacao do valor de fitness para a realização da selecao dos pais
+	Realiza a normalização do valor de fitness para a realização da seleção dos pais
 	"""
-	def __calc_offspring(self):
+	def offspring(self):
 
 		sum_fitness = 0
 		for indiv in self.__population:
@@ -157,7 +157,7 @@ class Saga():
 	Realiza a seleção do pai por meio do metodo da roleta, fazendo uso do offspring como 
 	parametro de avaliação de aptidão
 	"""
-	def __select_parent(self):
+	def select(self):
 		sum_offspring = 0
 		for indiv in self.__population:
 			sum_offspring += indiv.getOffspring()
@@ -184,9 +184,9 @@ class Saga():
 		operator_obj = Operator()
 
 		# gera população inicial
-		self.__initialPopulation(alignment)
+		self.initialize(alignment)
 		
-		self.__scorePopulation()
+		self.scorePopulation()
 
 		while self.__current_generation < self.__num_generations:
 			# print("current_generation = %d..." % self.__current_generation)
@@ -199,7 +199,7 @@ class Saga():
 				clone = indiv.clone(self.__current_generation+1)
 				next_generation.append(clone)
 
-			self.__calc_offspring()
+			self.offspring()
 			# print("offspring calculado...")
 			# realiza o preenchimento da lista de filhos
 			while len(next_generation) < self.__population_size:
@@ -207,7 +207,7 @@ class Saga():
 				num_parent = operator_obj.select_operator()
 				# print("selecting Operator, size next generation = %d..." % len(next_generation))
 				# seleciona um parent
-				parent1 = self.__select_parent()
+				parent1 = self.select()
 
 				# caso o parent seja incapaz de realizar crossover
 				if not parent1.getOffspring():
@@ -219,7 +219,7 @@ class Saga():
 				# caso o operador necessite de 2 parents
 				if num_parent == 2:
 					# seleciona o segundo parent
-					parent2 = self.__select_parent()
+					parent2 = self.select()
 
 					# caso o parent seja incapaz de realizar crossover
 					if not parent2.getOffspring():
@@ -230,8 +230,8 @@ class Saga():
 					operator_obj.run_operator(child1, parent2=child2)
 
 					# calcula o score dos filhos
-					self.__objective_function(child1, mode="natural")
-					self.__objective_function(child2, mode="natural")
+					self.fitness(child1, mode="natural")
+					self.fitness(child2, mode="natural")
 
 					# adiciona o filho de maior escore, e valido
 					if child1.getFitness() > child2.getFitness():
@@ -258,7 +258,7 @@ class Saga():
 					operator_obj.run_operator(child1)
 
 					# calcula o fitness do filho
-					self.__objective_function(child1, mode="natural")
+					self.fitness(child1, mode="natural")
 
 					# verifica se o filho é valido
 					if not self.__exist(child1, next_generation):
@@ -268,7 +268,7 @@ class Saga():
 			
 			self.__current_generation += 1
 			self.__population = next_generation
-			self.__scorePopulation()
+			self.scorePopulation()
 
 			# armazena os melhores de cada geracao
 			self.__bestSolution = self.__population[0]

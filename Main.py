@@ -1,26 +1,36 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*
 
+from NeighborJoining import NeighborJoining
 from Saga import Saga
+from Files import Files
 
 if __name__ == '__main__':
+    '''
     aligment = [
         "XTQNPQWLWQEVLQEQQLSRPTYETTT",
         "MTQNPQWLWQEVLTKLRPTYET",
-        "MTQNPQWLLSRPTYET",
+        #"MTQNPQWLLSRPTYET",
         "MTQNPQWLWQEVLTKLERPTYET",
         "MTQNPQWLWQEVLTKLEQQLSRPTYET",
         "MTQNPQWLWQEVLTKLEQQSRPTYET",
         "MTQNPQWLWQQLSRPTYET",
         "CTQNPQWLWQEVLQEQQLSRPTYETTT"
     ]
+    '''
 
-    saga = Saga(population_size=10, num_generations=20)
+    files = Files()
+    files.open("input.fasta")
+    nj = NeighborJoining(files.getLabels(), files.getSequencias())
+    #nj.execute()
+    #print(files.getSequencias())
+    #print(files.getLabels())
+
+    saga = Saga(population_size=20, num_generations=100)
     print("Parameters:")
-    print("Polulation size = 10")
-    print("um generations = 20")
-    print(aligment)
+    print("Polulation size = 20")
+    print("um generations = 100")
+    print(files.getSequencias())
     print()
-    saga.execute(aligment)
+    saga.execute(files.getSequencias())
     print("Fim execução!!")
-   
