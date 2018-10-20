@@ -12,11 +12,11 @@ Sequence Alignment by Genetic Algorithm
 
 ## Authors
 
-* [Everton Barbosa Jr](https://github.com/ejkun) (everton.barbosa@uft.edu.br)
+* ~~[Everton Barbosa Jr](https://github.com/ejkun) (everton.barbosa@uft.edu.br)~~
 * [Ivo Pontes Araújo](https://github.com/poentes) (ivopoentes@uft.edu.br)
 * [Osmir Custódio Mariano](https:github.com/osmirmariano) (osmirmariano@uft.edu.br)
 * [Rafael da Costa Silva](https://github.com/RafaelSilva7) (rafaelcs@uft.edu.br)
-* [Yasser Lassance](https://github.com/yasserlassance) (yasserlassance@uft.edu.br)
+* ~~[Yasser Lassance](https://github.com/yasserlassance) (yasserlassance@uft.edu.br)~~
 
 ## License
 

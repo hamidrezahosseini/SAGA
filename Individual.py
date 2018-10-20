@@ -91,7 +91,7 @@ class Individual():
 
 
 	def getLenAlignment(self):
-		return len(self.__chromosome[0])
+		return len(self.__chromosome)
 
 
 	def getOffspring(self):

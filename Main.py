@@ -5,9 +5,14 @@ from Saga import Saga
 
 if __name__ == '__main__':
     aligment = [
-        "MVKTLIFDIDGTILDTEKAILKSLQRI",
-        "MWLLLTMASLISVLGTTHGLFGKLHPGSPEV",
-        "MIFILTVNFRWRYLILLICKSLMLL"
+        "XTQNPQWLWQEVLQEQQLSRPTYETTT",
+        "MTQNPQWLWQEVLTKLRPTYET",
+        "MTQNPQWLLSRPTYET",
+        "MTQNPQWLWQEVLTKLERPTYET",
+        "MTQNPQWLWQEVLTKLEQQLSRPTYET",
+        "MTQNPQWLWQEVLTKLEQQSRPTYET",
+        "MTQNPQWLWQQLSRPTYET",
+        "CTQNPQWLWQEVLQEQQLSRPTYETTT"
     ]
 
     saga = Saga(population_size=10, num_generations=20)
